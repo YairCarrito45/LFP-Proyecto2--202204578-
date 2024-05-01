@@ -34,13 +34,14 @@ digitos += list(string.digits)
 letras += list(string.ascii_letters)
 
 
-def modificar_archivo(nombreArchivo, contenidoNuevo):
+def modificar_archivo(nombre_archivo, contenido_nuevo):
     try:
-        with open(nombreArchivo, 'w') as archivo:
-            archivo.write(contenidoNuevo)
+        with open(nombre_archivo, 'wb') as archivo:
+            archivo.write(contenido_nuevo)
         print('Contenido modificado')
     except IOError:
-        print(f'Error al abrir el archivo con el nombre {nombreArchivo}')
+        print(f'Error al abrir el archivo con el nombre {nombre_archivo}')
+
 
 def contenidoNew(tokens, tipo):
         titulo = ''
@@ -341,6 +342,7 @@ def leer_lexema():
     print("Imprimiento TIPOOOO LEER LEXEMA: ", tipo)
     return continuar, tipo, lexema
 
+
 def analizador_sintactico(cadena):
     global entrada
     global n_linea
@@ -554,6 +556,7 @@ def analizador_sintactico(cadena):
     contenidoNew(tokens, "tokens")
     
     return instrucciones
+
 
 
 entrada = '''

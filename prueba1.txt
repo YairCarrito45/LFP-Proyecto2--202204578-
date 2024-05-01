@@ -1,26 +1,25 @@
-CrearBD ejemplo = nueva CrearBD(); 
-EliminarBD elimina = nueva EliminarBD(); 
-CrearColeccion colec = nueva CrearColeccion(“NombreColeccion”); 
-EliminarColeccion  eliminacolec = nueva 
-EliminarColeccion(“NombreColeccion”); 
-InsertarUnico insertadoc = nueva InsertarUnico(“NombreColeccion”,“ 
-{ 
-"nombre":"Obra Literaria", 
-"autor":"Jorge Luis" 
-} 
-”); 
-ActualizarUnico actualizadoc = nueva ActualizarUnico(“NombreColeccion”, “  
-{      
-},  
-{      
-}  
-”);    
-"nombre": "Obra Literaria"  
-$set: {"autor": "Mario Vargas"}   
-EliminarUnico eliminadoc = nueva EliminarUnico(“NombreColeccion”, “  
-{      
-}  
-”);   
-"nombre": "Obra Literaria"  
-BuscarTodo todo = nueva BuscarTodo (“NombreColeccion”); 
-BuscarUnico todo = nueva BuscarUnico (“NombreColeccion”); 
+CrearBD ejemplo2 = new CrearBD();
+EliminarBD elimina2 = new EliminarBD();
+CrearColeccion colec2 = new CrearColeccion("OtraColeccion");
+EliminarColeccion eliminacolec2 = new EliminarColeccion("OtraColeccion");
+InsertarUnico insertadoc2 = new InsertarUnico("OtraColeccion", "
+{
+"nombre": "Pintura",
+"artista": "Leonardo da Vinci"
+}
+");
+ActualizarUnico actualizadoc2 = new ActualizarUnico("OtraColeccion", "
+{
+"nombre": "Pintura"
+},
+{
+$set: {"artista": "Vincent van Gogh"}
+}
+");
+EliminarUnico eliminadoc2 = new EliminarUnico("OtraColeccion", "
+{
+"nombre": "Pintura"
+}
+");
+BuscarTodo todo2 = new BuscarTodo("OtraColeccion");
+BuscarUnico todoUnico = new BuscarUnico("OtraColeccion");

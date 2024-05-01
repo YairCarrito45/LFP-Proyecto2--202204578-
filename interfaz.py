@@ -2,9 +2,9 @@ from tkinter import *
 from tkinter import ttk, scrolledtext, filedialog, messagebox
 import os
 from analizadorLexico import *
-from analizadorLexico import *
 
-class Aplicacion:
+
+class interfaz:
 
     def __init__(self):
         self.ventana = Tk()
@@ -104,4 +104,4 @@ class Aplicacion:
         path = 'TablaTokens.html'
         os.system(path)
 
-aplicacion = Aplicacion()
+aplicacion = interfaz()
