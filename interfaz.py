@@ -79,8 +79,7 @@ class Aplicacion:
                 self.texto = contenido
 
     def guardar_como(self):
-        nombre_archivo = filedialog.asksaveasfilename(initialdir="c:/pythonya", title="Guardar como",
-                                                       filetypes=(("txt files", "*.txt"), ("todos los archivos", "*.*")))
+        nombre_archivo = filedialog.asksaveasfilename(initialdir="c:/pythonya", title="Guardar como",filetypes=(("txt files", "*.txt"), ("todos los archivos", "*.*")))
         if nombre_archivo != '':
             with open(nombre_archivo, "w", encoding="utf-8") as archivo:
                 archivo.write(self.scrolledtext.get("1.0", END))
