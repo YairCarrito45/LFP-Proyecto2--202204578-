@@ -1,34 +1,60 @@
 <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Tabla Errores</title>
-            <style>
-                .centrado {
-                    margin: 0 auto;
-                    width: 50%; 
-                }
-            </style></head>
-        <body>
-        <div class="centrado">
-            <table border="1">
-                <caption>Tabla Errpres</caption>
-                <thead>
-                    <tr>
-                        <th>Token</th>
-                        <th>Linea</th>
-                        <th>Columna</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <tr>
-                            <td>G</td>
-                            <td>13</td>
-                            <td>91</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </body>
-        </html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tabla Errores</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f7f7f7;
+            }
+            .centrado {
+                margin: 0 auto;
+                width: 80%; 
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background-color: #f2f2f2;
+                text-align: left;
+            }
+            caption {
+                font-size: 1.2em;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="centrado">
+        <table>
+            <caption>Tabla Errores</caption>
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Linea</th>
+                    <th>Columna</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>G</td>
+                <td>11</td>
+                <td>29</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    </body>
+    </html>

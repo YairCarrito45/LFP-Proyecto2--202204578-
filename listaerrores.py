@@ -65,9 +65,3 @@ def errores(tipo, linea, columna, valorEsperado):
             
     tabla_errores(nombre_archivo, contenido_tabla)
 
-# Llamada a la función errores
-errores("sintactico", 700, 57, "///")
-errores("lexxx", 12, 5000, "///")
-errores("sintacticooooo", 36, 75, "///")
-errores("sintactico", 50, 65, "///")
-errores("lexxxtico", 500, 555, "///")

@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import scrolledtext, Menu, messagebox, filedialog
 import os
-from analizadorLexico import analizador_sintactico
-
+from analizadores import analizador_sintactico
+from listaerrores import* 
 class interfaz:
 
     def __init__(self):
