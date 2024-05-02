@@ -43,123 +43,137 @@ def modificar_archivo(nombreArchivo, contenidoNuevo):
         print(f'Error al abrir el archivo con el nombre {nombreArchivo}')
 
 def contenidoNew(tokens, tipo):
-        titulo = ''
-        if tipo == "tokens":
-            nombre_archivo = "TablaTokens.html"
-            titulo = "Tabla Tokens"
-        else: 
-            nombre_archivo = "TablaErrores.html"
-            titulo = "Tabla Errpres"
-        contenido_tabla = '''<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Tabla Errores</title>
-            <style>
-                .centrado {
-                    margin: 0 auto;
-                    width: 50%; 
-                }
-            </style>'''
-        contenido_tabla += f'''</head>
-        <body>
-        <div class="centrado">
-            <table border="1">
-                <caption>{titulo}</caption>
-                <thead>
-                    <tr>
-                        <th>Token</th>
-                        <th>Linea</th>
-                        <th>Columna</th>
-                    </tr>
-                </thead>
-                <tbody>'''
-        for token in tokens:
-            contenido_tabla += f'''
-                        <tr>
-                            <td>{token.token}</td>
-                            <td>{token.linea}</td>
-                            <td>{token.columna}</td>
-                        </tr>'''
-        contenido_tabla += '''
-                    </tbody>
-                </table>
-            </div>
-        </body>
-        </html>'''
-        modificar_archivo(nombre_archivo, contenido_tabla)
+    # Determinar el nombre del archivo y el título según el tipo
+    if tipo == "tokens":
+        nombre_archivo = "TablaTokens.html"
+        titulo = "Tabla Tokens"
+    else: 
+        nombre_archivo = "TablaErrores.html"
+        titulo = "Tabla Errores"
+
+    # Generar el contenido HTML de la tabla
+    contenido_tabla = generar_contenido_html(tokens, titulo)
+
+    # Modificar el archivo con el contenido generado
+    modificar_archivo(nombre_archivo, contenido_tabla)
+
+def generar_contenido_html(tokens, titulo):
+    # Encabezado del documento HTML
+    contenido_tabla = f'''<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{titulo}</title>
+        <style>
+            .centrado {{
+                margin: 0 auto;
+                width: 50%; 
+            }}
+        </style>
+    </head>
+    <body>
+    <div class="centrado">
+        <table border="1">
+            <caption>{titulo}</caption>
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Linea</th>
+                    <th>Columna</th>
+                </tr>
+            </thead>
+            <tbody>'''
+
+    # Agregar filas de datos a la tabla
+    for token in tokens:
+        contenido_tabla += f'''
+            <tr>
+                <td>{token.token}</td>
+                <td>{token.linea}</td>
+                <td>{token.columna}</td>
+            </tr>'''
+
+    # Cierre del documento HTML
+    contenido_tabla += '''
+            </tbody>
+        </table>
+    </div>
+    </body>
+    </html>'''
+
+    return contenido_tabla
+
 
 
 def leer_siguiente():
-    global n_linea
-    global n_columna
-    global puntero
+    global n_linea, n_columna, puntero
+    if puntero >= ultima_posicion:
+        return False, ''  # No hay más caracteres para leer
+
     char = entrada[puntero]
-    # print(char)
     puntero += 1
-    if puntero < ultima_posicion:
-        resultado = True
-    else:
-        resultado = False
+
     if char == '\n':
         n_linea += 1
         n_columna = 0
     else:
         n_columna += 1
-    return resultado, char
+
+    return True, char  # Se leyó un nuevo caracter
+
 
 def instruccion():
-    global entrada
-    global ultima_posicion
+    global entrada, ultima_posicion
     ultima_posicion = len(entrada)
-    #print(letras_digitos)
     continuar = True
-    inicio_lexema = False
-    #while cadena:
+
     while continuar:
         continuar, char = leer_siguiente()
-        # PUNTO DE INGRESO DE UN COMENTARIO
-        if char == '/':
-            print("inicio comentario")
+
+        if char == '/':  # Punto de ingreso de un comentario
+            print("Inicio de comentario")
             continuar = leer_comentario()
-        # PUNTO DE INGRESO DE UN COMENTARIO DE UNA SOLA LÍNEA
-        elif char == '-':
+        elif char == '-':  # Punto de ingreso de un comentario de una sola línea
             continuar = leer_comentario_en_linea()
-        # PUNTO DE INGRESO DE PALABRAS RESERVADAS
-        elif char in letras:
+        elif char in letras:  # Punto de ingreso de palabras reservadas
             continuar = leer_funcion(continuar, char)
+
 
 def leer_identificador(continuar, char):
     global puntero
-    identificador = ''
-    identificador += char
-    if continuar:
+    identificador = char
+
+    while continuar:
         continuar, char = leer_siguiente()
-        while continuar:
-            if char == '"':
+        
+        if char == '"':
+            continuar, char = leer_siguiente()
+            if char in letras_digitos:
+                identificador += char
                 continuar, char = leer_siguiente()
-                if char in letras_digitos:
-                    identificador += char
+                if char == '"':
                     continuar, char = leer_siguiente()
-                    if char == '"':
+                    if char == ')':
                         continuar, char = leer_siguiente()
-                        if char == ')':
-                            continuar, char = leer_siguiente()
-                            if char == ';':
-                                continuar = False
-            if char == ')':
-                continuar, char = leer_siguiente()
-                if char == ';':
-                    continuar = False
-    #print(f"IDENTIFICADOR {identificador}")
+                        if char == ';':
+                            continuar = False
+        elif char == ')':
+            continuar, char = leer_siguiente()
+            if char == ';':
+                continuar = False
+
+    # print(f"IDENTIFICADOR {identificador}")
+
 
 def leer_parametros(continuar, char):
     lexema = ''
     tipo = 'DESCONOCIDO'
     salir = False
+
     if continuar:
         continuar, char = leer_siguiente()
+        
         if char == ')':
             if continuar:
                 continuar, char = leer_siguiente()
@@ -167,75 +181,54 @@ def leer_parametros(continuar, char):
                     tipo = 'CERO PARAMETROS'
                     lexema = '();'
         else:
-            #print(f'ASCII: {ord(char)}')
-            ascii_char = ord(char)
-            if ascii_char == 8220 or ascii_char == 34:
-                if continuar:
-                    nombre = ""
-                    while not salir and continuar:
-                        continuar, char = leer_siguiente()
-                        #print(char)
-                        ascii_char = ord(char)
-                        #print(f'ASCII: {char} ---- {ascii_char}')
-                        if ascii_char == 8221 or ascii_char == 34:   #   " ahdkjhafdkf  ");   
-                            if continuar:
-                                continuar, char = leer_siguiente()
-                                #print(f'ASCII: {ord(char)}')
-                                if char == ')':
-                                    if continuar:
-                                        continuar, char = leer_siguiente()
-                                        #print(char)
-                                        if char == ';':
-                                            tipo = 'NOMBRE'
-                                            print("NOMBRE: -------- ",nombre)
-                                            lexema = nombre
-                                        else:
-                                            tipo = 'DESCONOCIDO'
-                                            lexema = ''
-                                        #print(f'ASCII: {ord(char)} --- {tipo} ---- {lexema}')
+            # Procesamiento para parámetros con nombre
+            if char == '"' or ord(char) == 8220 or ord(char) == 34:
+                nombre = ''
+                while not salir and continuar:
+                    continuar, char = leer_siguiente()
+                    ascii_char = ord(char)
+                    
+                    if ascii_char == 8221 or ascii_char == 34:  # Cierre de comillas "
+                        if continuar:
+                            continuar, char = leer_siguiente()
+                            if char == ')':
+                                if continuar:
+                                    continuar, char = leer_siguiente()
+                                    if char == ';':
+                                        tipo = 'NOMBRE'
+                                        lexema = nombre
                                         salir = True
-                                elif char == ',':   # " ,  
-                                    if continuar:
-                                        continuar, char = leer_siguiente()
-                                        #print(f'ASCII: {ord(char)}')
-                                        ascii_char = ord(char)
-                                        if ascii_char == 8220:  # " ,   "
-                                            if continuar:
-                                                parametro = ""
-                                                while not salir and continuar:
+                                    else:
+                                        tipo = 'DESCONOCIDO'
+                                        lexema = ''
+                                        salir = True
+                            elif char == ',':  # Coma para separar parámetros
+                                if continuar:
+                                    continuar, char = leer_siguiente()
+                                    if char == '"' or ord(char) == 8220:  # Inicio de nueva comilla "
+                                        parametro = ''
+                                        while not salir and continuar:
+                                            continuar, char = leer_siguiente()
+                                            ascii_char = ord(char)
+                                            if ascii_char == 8221:  # Cierre de nueva comilla "
+                                                if continuar:
                                                     continuar, char = leer_siguiente()
-                                                    #print(char)
-                                                    ascii_char = ord(char)
-                                                    #print(f'ASCII: {char} ---- {ascii_char}')
-                                                    if ascii_char == 8221:  # " ,   ""
+                                                    if char == ')':
                                                         if continuar:
                                                             continuar, char = leer_siguiente()
-                                                            #print(f'ASCII: {ord(char)}')
-                                                            if char == ')':
-                                                                if continuar:
-                                                                    continuar, char = leer_siguiente()
-                                                                    #print(char)
-                                                                    if char == ';':
-                                                                        tipo = 'PARAMETRO'
-                                                                        print("NOMBRE----",nombre,"----PARAMETRO----",parametro)
-                                                                        lexema = [nombre, parametro]
-                                                                    else:
-                                                                        tipo = 'DESCONOCIDO'
-                                                                        lexema = ''
-                                                                    #print(f'ASCII: {ord(char)} --- {tipo} ---- {lexema}')
-                                                                    salir = True
-                                                            else:
-                                                                tipo = 'DESCONOCIDO'
-                                                                lexema = ''
+                                                            if char == ';':
+                                                                tipo = 'PARAMETRO'
+                                                                lexema = [nombre, parametro]
                                                                 salir = True
-                                                    else:
-                                                        parametro += char
-                                else:
-                                    tipo = 'DESCONOCIDO'
-                                    lexema = ''
-                                    salir = True
-                        else:
-                            nombre += char
+                                            else:
+                                                parametro += char
+                            else:
+                                tipo = 'DESCONOCIDO'
+                                lexema = ''
+                                salir = True
+                    else:
+                        nombre += char
+
     return continuar, tipo, lexema
 
 def leer_funcion(continuar, char):
@@ -266,6 +259,7 @@ def leer_funcion(continuar, char):
 def leer_comentario_en_linea():
     errores = []
     continuar, char = leer_siguiente()
+
     if char == '-':
         if continuar:
             continuar, char = leer_siguiente()
@@ -273,51 +267,55 @@ def leer_comentario_en_linea():
                 while continuar:
                     continuar, char = leer_siguiente()
                     if char == '\n':
-                        #print(f'comentario en linea leido en columna {n_columna} y fila {n_linea}')
+                        # print(f'Comentario en línea leído en columna {n_columna} y fila {n_linea}')
                         return True
             else:
                 errores.append(Errores(char, n_linea, n_columna))
+        else:
+            errores.append(Errores(char, n_linea, n_columna))
     else:
         errores.append(Errores(char, n_linea, n_columna))
-    contenidoNew(errores, errores)
+
+    contenidoNew(errores, 'Errores')
     return False
+
 
 def leer_comentario():
     continuar, char = leer_siguiente()
-    if char == '*':
-        #inicio de comentario
+
+    if char == '*':  # Verifica el inicio del comentario
         while continuar:
             continuar, char = leer_siguiente()
             if char == '*':
                 if continuar:
                     continuar, char = leer_siguiente()
                     if char == '/':
-                        #no se almacena el comentario
-                        #print(f'comentario leido en columna {n_columna} y fila {n_linea}')
+                        # Comentario completo encontrado, se omite su almacenamiento
+                        # print(f'Comentario leído en columna {n_columna} y fila {n_linea}')
                         return True
+            elif char == '\n':
+                # Incrementa el número de línea al encontrar un salto de línea dentro del comentario
+                global n_linea
+                n_linea += 1
     return False
 
+
 def leer_lexema():
-    global entrada
-    global ultima_posicion
+    global entrada, ultima_posicion
     ultima_posicion = len(entrada)
-    #print(letras_digitos)
     continuar = True
     salir = False
     inicio_lexema = False
-    tipo = 'ND'
+    tipo = 'ND'  # Tipo por defecto, 'ND' para "No Definido"
     lexema = ''
+
     while not salir and continuar:
         continuar, char = leer_siguiente()
-        # PUNTO DE INGRESO DE UN COMENTARIO
-        #print("continuar ------" ,continuar, "   char --------" ,char)
+
         if char == '/':
-            #print("inicio comentario")
             continuar = leer_comentario()
-        # PUNTO DE INGRESO DE UN COMENTARIO DE UNA SOLA LÍNEA
         elif char == '-':
             continuar = leer_comentario_en_linea()
-        # PUNTO DE INGRESO DE PALABRAS RESERVADAS
         elif char in letras:
             continuar, tipo, lexema = leer_funcion(continuar, char)
             salir = True
@@ -326,20 +324,15 @@ def leer_lexema():
             tipo = 'IGUAL'
             salir = True
         elif char == '(':
-            
             continuar, tipo, lexema = leer_parametros(continuar, char)
-            
-            if tipo == 'CERO PARAMETROS':
+
+            if tipo in ('CERO PARAMETROS', 'NOMBRE', 'PARAMETRO'):
                 salir = True
-            elif tipo == 'NOMBRE':
-                salir = True
-            elif tipo == 'PARAMETRO':
-                salir = True
-        # PUNTO DE INGRESO DE UN IDENTIFICADOR
-    #print(f'LISTA ERRORES ---- {lista_errores}')
-    #print(f'{tipo}: {lexema}')
+
+    # print(f'{tipo}: {lexema}')
     print("Imprimiento TIPOOOO LEER LEXEMA: ", tipo)
     return continuar, tipo, lexema
+
 
 def analizador_sintactico(cadena):
     global entrada
